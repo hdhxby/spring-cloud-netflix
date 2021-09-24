@@ -56,10 +56,16 @@ public class EurekaServerBootstrap {
 
 	private static final String EUREKA_DATACENTER = "eureka.datacenter";
 
+	/**
+	 * 服务端配置
+	 */
 	protected EurekaServerConfig eurekaServerConfig;
 
 	protected ApplicationInfoManager applicationInfoManager;
 
+	/**
+	 * 客户端配置
+	 */
 	protected EurekaClientConfig eurekaClientConfig;
 
 	protected PeerAwareInstanceRegistry registry;
