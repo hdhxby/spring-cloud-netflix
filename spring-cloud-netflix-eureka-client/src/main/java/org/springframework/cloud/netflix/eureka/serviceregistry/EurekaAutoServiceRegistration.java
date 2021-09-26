@@ -79,7 +79,7 @@ public class EurekaAutoServiceRegistration implements AutoServiceRegistration,
 		// only initialize if nonSecurePort is greater than 0 and it isn't already running
 		// because of containerPortInitializer below
 		if (!this.running.get() && this.registration.getNonSecurePort() > 0) {
-
+			// 服务注册
 			this.serviceRegistry.register(this.registration);
 
 			this.context.publishEvent(new InstanceRegisteredEvent<>(this,
@@ -90,6 +90,7 @@ public class EurekaAutoServiceRegistration implements AutoServiceRegistration,
 
 	@Override
 	public void stop() {
+		// 服务注销
 		this.serviceRegistry.deregister(this.registration);
 		this.running.set(false);
 	}

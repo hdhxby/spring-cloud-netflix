@@ -43,7 +43,9 @@ public class EurekaServiceRegistry implements ServiceRegistry<EurekaRegistration
 					+ " with eureka with status "
 					+ reg.getInstanceConfig().getInitialStatus());
 		}
-
+		// 服务状态变更,会触发ApplicationInfoManager.StatusChangeListener的执行
+		// DiscoveryClient的initScheduledTasks方法中初始化了一个匿名内部类
+		// 当状态变更时,完成eureka的注册
 		reg.getApplicationInfoManager()
 				.setInstanceStatus(reg.getInstanceConfig().getInitialStatus());
 
