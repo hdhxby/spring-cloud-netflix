@@ -121,8 +121,8 @@ public class PreDecorationFilter extends ZuulFilter {
 	@Override
 	public boolean shouldFilter() {
 		RequestContext ctx = RequestContext.getCurrentContext();
-		return !ctx.containsKey(FORWARD_TO_KEY) // a filter has already forwarded
-				&& !ctx.containsKey(SERVICE_ID_KEY); // a filter has already determined
+		return !ctx.containsKey(FORWARD_TO_KEY) // a filter has already forwarded 不是跳转
+				&& !ctx.containsKey(SERVICE_ID_KEY); // a filter has already determined 不是服务
 		// serviceId
 	}
 
@@ -134,9 +134,9 @@ public class PreDecorationFilter extends ZuulFilter {
 		if (insecurePath(requestURI)) {
 			throw new InsecureRequestPathException(requestURI);
 		}
-		Route route = this.routeLocator.getMatchingRoute(requestURI);
+		Route route = this.routeLocator.getMatchingRoute(requestURI); // 匹配路由
 		if (route != null) {
-			String location = route.getLocation();
+			String location = route.getLocation(); // 路由地址
 			if (location != null) {
 				ctx.put(REQUEST_URI_KEY, route.getPath());
 				ctx.put(PROXY_KEY, route.getId());
@@ -150,25 +150,25 @@ public class PreDecorationFilter extends ZuulFilter {
 				}
 
 				if (route.getRetryable() != null) {
-					ctx.put(RETRYABLE_KEY, route.getRetryable());
+					ctx.put(RETRYABLE_KEY, route.getRetryable()); // 重试
 				}
 
 				if (location.startsWith(HTTP_SCHEME + ":")
 						|| location.startsWith(HTTPS_SCHEME + ":")) {
-					ctx.setRouteHost(getUrl(location));
+					ctx.setRouteHost(getUrl(location)); // 路由, SimpleHostRoutingFilter依赖这个属性
 					ctx.addOriginResponseHeader(SERVICE_HEADER, location);
 				}
 				else if (location.startsWith(FORWARD_LOCATION_PREFIX)) {
 					ctx.set(FORWARD_TO_KEY,
 							StringUtils.cleanPath(
 									location.substring(FORWARD_LOCATION_PREFIX.length())
-											+ route.getPath()));
+											+ route.getPath())); // 转发, SendForwardFilter依赖这个属性
 					ctx.setRouteHost(null);
 					return null;
 				}
 				else {
 					// set serviceId for use in filters.route.RibbonRequest
-					ctx.set(SERVICE_ID_KEY, location);
+					ctx.set(SERVICE_ID_KEY, location); // 路由, RibbonRoutingFilter依赖这个属性
 					ctx.setRouteHost(null);
 					ctx.addOriginResponseHeader(SERVICE_ID_HEADER, location);
 				}
@@ -195,7 +195,7 @@ public class PreDecorationFilter extends ZuulFilter {
 			log.warn("No route found for uri: " + requestURI);
 			String forwardURI = getForwardUri(requestURI);
 
-			ctx.set(FORWARD_TO_KEY, forwardURI);
+			ctx.set(FORWARD_TO_KEY, forwardURI); // 转发, SendForwardFilter依赖这个属性
 		}
 		return null;
 	}

@@ -103,8 +103,11 @@ public class EurekaRibbonClientConfiguration {
 		if (this.propertiesFactory.isSet(ServerList.class, serviceId)) {
 			return this.propertiesFactory.get(ServerList.class, config, serviceId);
 		}
+		// 支付服务发现的ServerList
 		DiscoveryEnabledNIWSServerList discoveryServerList = new DiscoveryEnabledNIWSServerList(
 				config, eurekaClientProvider);
+		// 装饰 netflix ribbon的DiscoveryEnabledNIWSServerList
+		// 支持域名提取的ServerList
 		DomainExtractingServerList serverList = new DomainExtractingServerList(
 				discoveryServerList, config, this.approximateZoneFromHostname);
 		return serverList;

@@ -60,13 +60,13 @@ public class SendForwardFilter extends ZuulFilter {
 	public Object run() {
 		try {
 			RequestContext ctx = RequestContext.getCurrentContext();
-			String path = (String) ctx.get(FORWARD_TO_KEY);
-			RequestDispatcher dispatcher = ctx.getRequest().getRequestDispatcher(path);
-			if (dispatcher != null) {
-				ctx.set(SEND_FORWARD_FILTER_RAN, true);
-				if (!ctx.getResponse().isCommitted()) {
-					dispatcher.forward(ctx.getRequest(), ctx.getResponse());
-					ctx.getResponse().flushBuffer();
+			String path = (String) ctx.get(FORWARD_TO_KEY);// 获取转发路径
+			RequestDispatcher dispatcher = ctx.getRequest().getRequestDispatcher(path);// 获取调度器
+			if (dispatcher != null) {// 调度不为空
+				ctx.set(SEND_FORWARD_FILTER_RAN, true);// 设置一个key
+				if (!ctx.getResponse().isCommitted()) {// 已提交
+					dispatcher.forward(ctx.getRequest(), ctx.getResponse());// 转发
+					ctx.getResponse().flushBuffer();// 刷新缓存
 				}
 			}
 		}

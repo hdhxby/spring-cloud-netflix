@@ -75,27 +75,27 @@ public class SendErrorFilter extends ZuulFilter {
 	public Object run() {
 		try {
 			RequestContext ctx = RequestContext.getCurrentContext();
-			ExceptionHolder exception = findZuulException(ctx.getThrowable());
+			ExceptionHolder exception = findZuulException(ctx.getThrowable());// 异常信息holder
 			HttpServletRequest request = ctx.getRequest();
 
 			request.setAttribute("javax.servlet.error.status_code",
-					exception.getStatusCode());
+					exception.getStatusCode());// 异常状态,500,INTERNAL_SERVER_ERROR
 
 			log.warn("Error during filtering", exception.getThrowable());
 			request.setAttribute("javax.servlet.error.exception",
-					exception.getThrowable());
+					exception.getThrowable());// 异常信息
 
 			if (StringUtils.hasText(exception.getErrorCause())) {
 				request.setAttribute("javax.servlet.error.message",
-						exception.getErrorCause());
+						exception.getErrorCause());// 异常原因
 			}
 
-			RequestDispatcher dispatcher = request.getRequestDispatcher(this.errorPath);
+			RequestDispatcher dispatcher = request.getRequestDispatcher(this.errorPath);// 异常请求调度器
 			if (dispatcher != null) {
 				ctx.set(SEND_ERROR_FILTER_RAN, true);
 				if (!ctx.getResponse().isCommitted()) {
-					ctx.setResponseStatusCode(exception.getStatusCode());
-					dispatcher.forward(request, ctx.getResponse());
+					ctx.setResponseStatusCode(exception.getStatusCode());// 设置异常状态
+					dispatcher.forward(request, ctx.getResponse());// 跳转到异常请求
 				}
 			}
 		}

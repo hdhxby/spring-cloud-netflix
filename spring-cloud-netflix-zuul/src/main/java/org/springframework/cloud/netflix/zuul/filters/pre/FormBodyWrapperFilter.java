@@ -100,9 +100,9 @@ public class FormBodyWrapperFilter extends ZuulFilter {
 		// DispatcherServlet handler
 		try {
 			MediaType mediaType = MediaType.valueOf(contentType);
-			return MediaType.APPLICATION_FORM_URLENCODED.includes(mediaType)
-					|| (isDispatcherServletRequest(request)
-							&& MediaType.MULTIPART_FORM_DATA.includes(mediaType));
+			return MediaType.APPLICATION_FORM_URLENCODED.includes(mediaType)// x-www-form-urlencoded
+					|| (isDispatcherServletRequest(request)//  是DispatcherServlet还是ZuulServlet
+							&& MediaType.MULTIPART_FORM_DATA.includes(mediaType));// multipart/form-data
 		}
 		catch (InvalidMediaTypeException ex) {
 			return false;
@@ -122,14 +122,14 @@ public class FormBodyWrapperFilter extends ZuulFilter {
 		if (request instanceof HttpServletRequestWrapper) {
 			HttpServletRequest wrapped = (HttpServletRequest) ReflectionUtils
 					.getField(this.requestField, request);
-			wrapper = new FormBodyRequestWrapper(wrapped);
+			wrapper = new FormBodyRequestWrapper(wrapped);// 包装成FormBodyRequestWrapper
 			ReflectionUtils.setField(this.requestField, request, wrapper);
 			if (request instanceof ServletRequestWrapper) {
 				ReflectionUtils.setField(this.servletRequestField, request, wrapper);
 			}
 		}
 		else {
-			wrapper = new FormBodyRequestWrapper(request);
+			wrapper = new FormBodyRequestWrapper(request);// 包装成FormBodyRequestWrapper
 			ctx.setRequest(wrapper);
 		}
 		if (wrapper != null) {

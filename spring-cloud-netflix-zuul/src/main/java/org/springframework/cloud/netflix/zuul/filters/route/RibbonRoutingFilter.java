@@ -115,9 +115,9 @@ public class RibbonRoutingFilter extends ZuulFilter {
 		RequestContext context = RequestContext.getCurrentContext();
 		this.helper.addIgnoredHeaders();
 		try {
-			RibbonCommandContext commandContext = buildCommandContext(context);
-			ClientHttpResponse response = forward(commandContext);
-			setResponse(response);
+			RibbonCommandContext commandContext = buildCommandContext(context); // Ribbon命令上下文
+			ClientHttpResponse response = forward(commandContext); // 转发
+			setResponse(response); // 设置响应
 			return response;
 		}
 		catch (ZuulException ex) {
@@ -129,21 +129,21 @@ public class RibbonRoutingFilter extends ZuulFilter {
 	}
 
 	protected RibbonCommandContext buildCommandContext(RequestContext context) {
-		HttpServletRequest request = context.getRequest();
+		HttpServletRequest request = context.getRequest(); // 请求
 
 		MultiValueMap<String, String> headers = this.helper
 				.buildZuulRequestHeaders(request);
 		MultiValueMap<String, String> params = this.helper
 				.buildZuulRequestQueryParams(request);
-		String verb = getVerb(request);
-		InputStream requestEntity = getRequestBody(request);
+		String verb = getVerb(request); // 请求方法
+		InputStream requestEntity = getRequestBody(request); // 请求体
 		if (request.getContentLength() < 0 && !verb.equalsIgnoreCase("GET")) {
 			context.setChunkedRequestBody();
 		}
 
-		String serviceId = (String) context.get(SERVICE_ID_KEY);
-		Boolean retryable = (Boolean) context.get(RETRYABLE_KEY);
-		Object loadBalancerKey = context.get(LOAD_BALANCER_KEY);
+		String serviceId = (String) context.get(SERVICE_ID_KEY); // 服务ID
+		Boolean retryable = (Boolean) context.get(RETRYABLE_KEY); // 是否重试
+		Object loadBalancerKey = context.get(LOAD_BALANCER_KEY); // 负载均衡
 
 		String uri = this.helper.buildZuulRequestURI(request);
 
@@ -154,7 +154,7 @@ public class RibbonRoutingFilter extends ZuulFilter {
 				: request.getContentLength();
 
 		return new RibbonCommandContext(serviceId, verb, uri, retryable, headers, params,
-				requestEntity, this.requestCustomizers, contentLength, loadBalancerKey);
+				requestEntity, this.requestCustomizers, contentLength, loadBalancerKey); // Ribbon命令上下文
 	}
 
 	protected ClientHttpResponse forward(RibbonCommandContext context) throws Exception {
@@ -162,7 +162,7 @@ public class RibbonRoutingFilter extends ZuulFilter {
 				context.getUri(), context.getHeaders(), context.getParams(),
 				context.getRequestEntity());
 
-		RibbonCommand command = this.ribbonCommandFactory.create(context);
+		RibbonCommand command = this.ribbonCommandFactory.create(context); // HystrixCommand
 		try {
 			ClientHttpResponse response = command.execute();
 			this.helper.appendDebug(info, response.getRawStatusCode(),

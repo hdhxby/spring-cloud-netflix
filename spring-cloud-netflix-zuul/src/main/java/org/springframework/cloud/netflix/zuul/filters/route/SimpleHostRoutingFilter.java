@@ -223,19 +223,19 @@ public class SimpleHostRoutingFilter extends ZuulFilter
 				.buildZuulRequestHeaders(request);
 		MultiValueMap<String, String> params = this.helper
 				.buildZuulRequestQueryParams(request);
-		String verb = getVerb(request);
-		InputStream requestEntity = getRequestBody(request);
+		String verb = getVerb(request); // 请求方法
+		InputStream requestEntity = getRequestBody(request); // 请求实体,输入流
 		if (getContentLength(request) < 0) {
 			context.setChunkedRequestBody();
 		}
 
-		String uri = this.helper.buildZuulRequestURI(request);
-		this.helper.addIgnoredHeaders();
+		String uri = this.helper.buildZuulRequestURI(request); // uri
+		this.helper.addIgnoredHeaders(); // 忽略某些请求头
 
 		try {
 			CloseableHttpResponse response = forward(this.httpClient, verb, uri, request,
-					headers, params, requestEntity);
-			setResponse(response);
+					headers, params, requestEntity); // 请求转发
+			setResponse(response); // 设置响应
 		}
 		catch (Exception ex) {
 			throw new ZuulRuntimeException(handleException(ex));

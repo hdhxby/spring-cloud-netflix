@@ -158,6 +158,7 @@ public class RibbonClientConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ServerListUpdater ribbonServerListUpdater(IClientConfig config) {
+		// 服务列表更新
 		return new PollingServerListUpdater(config);
 	}
 

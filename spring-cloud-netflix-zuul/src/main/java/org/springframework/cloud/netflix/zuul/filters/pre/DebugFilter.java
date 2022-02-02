@@ -64,8 +64,8 @@ public class DebugFilter extends ZuulFilter {
 	@Override
 	public Object run() {
 		RequestContext ctx = RequestContext.getCurrentContext();
-		ctx.setDebugRouting(true);
-		ctx.setDebugRequest(true);
+		ctx.setDebugRouting(true);// debug 路由
+		ctx.setDebugRequest(true);// debug 请求
 		return null;
 	}
 

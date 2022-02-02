@@ -67,7 +67,7 @@ public class ServletDetectionFilter extends ZuulFilter {
 		RequestContext ctx = RequestContext.getCurrentContext();
 		HttpServletRequest request = ctx.getRequest();
 		if (!(request instanceof HttpServletRequestWrapper)
-				&& isDispatcherServletRequest(request)) {
+				&& isDispatcherServletRequest(request)) {// 是DispatcherServlet还是ZuulServlet
 			ctx.set(IS_DISPATCHER_SERVLET_REQUEST_KEY, true);
 		}
 		else {

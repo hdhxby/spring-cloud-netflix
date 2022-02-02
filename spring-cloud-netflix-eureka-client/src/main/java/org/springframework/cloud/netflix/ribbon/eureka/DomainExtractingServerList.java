@@ -65,7 +65,7 @@ public class DomainExtractingServerList implements ServerList<DiscoveryEnabledSe
 		boolean shouldUseIpAddr = this.ribbon.isUseIPAddrForServer();
 		for (DiscoveryEnabledServer server : servers) {
 			result.add(new DomainExtractingServer(server, isSecure, shouldUseIpAddr,
-					this.approximateZoneFromHostname));
+					this.approximateZoneFromHostname));// 增强的DiscoveryEnabledServer
 		}
 		return result;
 	}

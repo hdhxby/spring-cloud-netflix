@@ -75,11 +75,11 @@ public class Servlet30WrapperFilter extends ZuulFilter {
 		if (request instanceof HttpServletRequestWrapper) {
 			request = (HttpServletRequest) ReflectionUtils.getField(this.requestField,
 					request);
-			ctx.setRequest(new Servlet30RequestWrapper(request));
+			ctx.setRequest(new Servlet30RequestWrapper(request));// 设置ServletRequest包装器
 		}
-		else if (RequestUtils.isDispatcherServletRequest()) {
+		else if (RequestUtils.isDispatcherServletRequest()) {// 是DispatcherServlet还是ZuulServlet
 			// If it's going through the dispatcher we need to buffer the body
-			ctx.setRequest(new Servlet30RequestWrapper(request));
+			ctx.setRequest(new Servlet30RequestWrapper(request));// 设置ServletRequest包装器
 		}
 		return null;
 	}

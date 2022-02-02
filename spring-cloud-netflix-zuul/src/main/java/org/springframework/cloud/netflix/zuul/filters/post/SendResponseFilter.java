@@ -108,8 +108,8 @@ public class SendResponseFilter extends ZuulFilter {
 	@Override
 	public Object run() {
 		try {
-			addResponseHeaders();
-			writeResponse();
+			addResponseHeaders();// 添加Header
+			writeResponse();// 写响应
 		}
 		catch (Exception ex) {
 			ReflectionUtils.rethrowRuntimeException(ex);
@@ -126,21 +126,21 @@ public class SendResponseFilter extends ZuulFilter {
 		}
 		HttpServletResponse servletResponse = context.getResponse();
 		if (servletResponse.getCharacterEncoding() == null) { // only set if not set
-			servletResponse.setCharacterEncoding("UTF-8");
+			servletResponse.setCharacterEncoding("UTF-8"); // 设置字符编码
 		}
 
-		String servletResponseContentEncoding = getResponseContentEncoding(context);
+		String servletResponseContentEncoding = getResponseContentEncoding(context); // 响应内容编码
 		OutputStream outStream = servletResponse.getOutputStream();
 		InputStream is = null;
 		try {
-			if (context.getResponseBody() != null) {
+			if (context.getResponseBody() != null) { // 响应体
 				String body = context.getResponseBody();
 				is = new ByteArrayInputStream(
 						body.getBytes(servletResponse.getCharacterEncoding()));
 			}
 			else {
 				is = context.getResponseDataStream();
-				if (is != null && context.getResponseGZipped()) {
+				if (is != null && context.getResponseGZipped()) { // 响应数据流
 					// if origin response is gzipped, and client has not requested gzip,
 					// decompress stream before sending to client
 					// else, stream gzip directly to client
@@ -155,11 +155,11 @@ public class SendResponseFilter extends ZuulFilter {
 			}
 			if (servletResponseContentEncoding != null) {
 				servletResponse.setHeader(ZuulHeaders.CONTENT_ENCODING,
-						servletResponseContentEncoding);
+						servletResponseContentEncoding); // 响应内容编码
 			}
 
 			if (is != null) {
-				writeResponse(is, outStream);
+				writeResponse(is, outStream);// 写响应
 			}
 		}
 		finally {
@@ -257,14 +257,14 @@ public class SendResponseFilter extends ZuulFilter {
 		byte[] bytes = buffers.get();
 		int bytesRead = -1;
 		while ((bytesRead = zin.read(bytes)) != -1) {
-			out.write(bytes, 0, bytesRead);
+			out.write(bytes, 0, bytesRead);// 从input写到output
 		}
 	}
 
 	private void addResponseHeaders() {
 		RequestContext context = RequestContext.getCurrentContext();
 		HttpServletResponse servletResponse = context.getResponse();
-		if (this.zuulProperties.isIncludeDebugHeader()) {
+		if (this.zuulProperties.isIncludeDebugHeader()) {// 包含debug头
 			@SuppressWarnings("unchecked")
 			List<String> rd = (List<String>) context.get(ROUTING_DEBUG_KEY);
 			if (rd != null) {
